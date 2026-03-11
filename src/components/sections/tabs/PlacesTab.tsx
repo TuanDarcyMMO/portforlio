@@ -12,6 +12,7 @@ import {
   createSwipeDetector,
   GalleryImage,
 } from "@/lib/galleryUtils";
+import { recordLike, recordView, getStats } from "@/lib/galleryStorage";
 
 interface Place {
   id: string;
@@ -82,18 +83,12 @@ function generatePhotoId(folder: string, filename: string): string {
 }
 
 /**
- * Record a like for a photo
+ * Record a like for a photo using client-side storage
  */
-async function recordPhotoLike(photoId: string): Promise<number> {
+function recordPhotoLike(photoId: string): number {
   try {
-    const response = await fetch("/api/photo-like", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ photoId }),
-    });
-    if (!response.ok) throw new Error("Failed to record like");
-    const data = await response.json();
-    return data.likes;
+    const result = recordLike(photoId);
+    return result.likes;
   } catch (error) {
     console.error("Error recording like:", error);
     return 0;
@@ -101,18 +96,12 @@ async function recordPhotoLike(photoId: string): Promise<number> {
 }
 
 /**
- * Record a view for a photo
+ * Record a view for a photo using client-side storage
  */
-async function recordPhotoView(photoId: string): Promise<number> {
+function recordPhotoView(photoId: string): number {
   try {
-    const response = await fetch("/api/photo-view", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ photoId }),
-    });
-    if (!response.ok) throw new Error("Failed to record view");
-    const data = await response.json();
-    return data.views;
+    const result = recordView(photoId);
+    return result.views;
   } catch (error) {
     console.error("Error recording view:", error);
     return 0;
@@ -164,14 +153,16 @@ const FullImageViewer = memo(function FullImageViewer({
 
     const photoId = generatePhotoId(placeFolder, currentImage.name);
 
-    // Record view
-    recordPhotoView(photoId).then((viewCount) => {
-      onPhotoStatsChange(photoId, {
-        ...stats,
-        views: viewCount,
-      });
+    // Record view and update stats
+    recordPhotoView(photoId);
+    const updatedStats = getStats(photoId);
+
+    onPhotoStatsChange(photoId, {
+      likes: updatedStats.likes,
+      views: updatedStats.views,
+      hasLiked: updatedStats.hasLiked,
     });
-  }, [currentImageIndex, currentImage, placeFolder, stats, onPhotoStatsChange]);
+  }, [currentImageIndex, currentImage, placeFolder, onPhotoStatsChange]);
 
   /**
    * Preload images N+1 and N-1 for smooth swiping
@@ -199,19 +190,20 @@ const FullImageViewer = memo(function FullImageViewer({
   }, [currentImageIndex, images.length, onImageIndexChange]);
 
   const handleLike = useCallback(
-    async (x: number, y: number) => {
+    (x: number, y: number) => {
       if (isLiking || stats.hasLiked) return;
 
       setIsLiking(true);
 
       try {
-        const newLikeCount = await recordPhotoLike(photoId);
+        recordPhotoLike(photoId);
+        const updatedStats = getStats(photoId);
 
         // Update stats
         onPhotoStatsChange(photoId, {
-          ...stats,
-          likes: newLikeCount,
-          hasLiked: true,
+          likes: updatedStats.likes,
+          views: updatedStats.views,
+          hasLiked: updatedStats.hasLiked,
         });
 
         // Show floating heart animation
