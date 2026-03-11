@@ -1,4 +1,5 @@
 import type { Metadata, Viewport } from "next";
+import { Analytics } from "@vercel/analytics/next";
 import "./globals.css";
 import { FloatingMusicPlayer } from "@/components/sections/FloatingMusicPlayer";
 import { VisitCounter } from "@/components/VisitCounter";
@@ -31,6 +32,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <FloatingMusicPlayer />
         <VisitCounter />
+        <Analytics />
       </body>
     </html>
   );
