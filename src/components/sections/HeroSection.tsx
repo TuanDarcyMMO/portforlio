@@ -64,7 +64,7 @@ export function HeroSection() {
           <motion.div variants={staggerChildVariants}>
             <h1 className="text-6xl md:text-7xl lg:text-8xl font-bold leading-tight">
               <span className="gradient-text block py-2">WELCOME</span>
-              <span className="gradient-text block py-2">TO MY PORTFORLIO</span>
+              <span className="gradient-text block py-2">TO MY PORTFOLIO</span>
             </h1>
           </motion.div>
 
