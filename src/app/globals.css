@@ -1,0 +1,152 @@
+/* ============================================
+   GLOBAL STYLES & CSS VARIABLES
+   ============================================ */
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* IMPORTANT: Color Scheme - Design Locked */
+:root {
+  /* Base colors */
+  --color-background: 10 10 10; /* Near black */
+  --color-foreground: 255 255 255; /* White text */
+
+  /* Primary accent colors */
+  --color-primary: 99 102 241; /* Indigo-500 */
+  --color-secondary: 139 92 246; /* Violet-500 */
+  --color-accent: 168 85 247; /* Purple-500 */
+
+  /* Semantic colors */
+  --color-success: 34 197 94; /* Green-500 */
+  --color-warning: 245 158 11; /* Amber-500 */
+  --color-error: 239 68 68; /* Red-500 */
+}
+
+/* Dark mode (default) */
+@media (prefers-color-scheme: light) {
+  :root {
+    --color-background: 255 255 255;
+    --color-foreground: 10 10 10;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  overflow-x: hidden;
+}
+
+body {
+  background-color: rgb(var(--color-background));
+  color: rgb(var(--color-foreground));
+  font-family:
+    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: 1.6;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Continuous background gradient overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background:
+    radial-gradient(circle at 20% 50%, rgba(99, 102, 241, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.08) 0%, transparent 50%),
+    radial-gradient(circle at 40% 80%, rgba(139, 92, 246, 0.08) 0%, transparent 50%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgb(var(--color-primary) / 0.5);
+  border-radius: 5px;
+  transition: background 0.2s;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgb(var(--color-primary));
+}
+
+/* Selection styling */
+::selection {
+  background-color: rgb(var(--color-primary));
+  color: white;
+}
+
+/* Custom animations */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes floatingElement {
+  0%,
+  100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
+@keyframes glow {
+  0%,
+  100% {
+    box-shadow: 0 0 5px rgba(var(--color-primary), 0.3);
+  }
+  50% {
+    box-shadow: 0 0 20px rgba(var(--color-primary), 0.6);
+  }
+}
+
+/* Utility classes */
+.gradient-text {
+  background: linear-gradient(135deg, rgb(var(--color-primary)), rgb(var(--color-accent)));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.glass-effect {
+  background: rgba(255, 255, 255, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.floating {
+  animation: floatingElement 3s ease-in-out infinite;
+}
+
+.glow {
+  animation: glow 2s ease-in-out infinite;
+}
